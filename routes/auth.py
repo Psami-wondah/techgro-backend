@@ -259,7 +259,7 @@ async def google_auth(data: GoogleAuth):
         user = get_user(email)
         access_token_expires = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
-                data={"sub": user.email}, expires_delta=access_token_expires
+                data={"sub": email}, expires_delta=access_token_expires
             )
         if user:
             if not user.is_verified:
