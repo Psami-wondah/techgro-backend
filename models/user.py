@@ -5,7 +5,7 @@ from typing import Any
 
 
 class User(BaseModel):
-    username: str
+    username: Optional[str] = None
     email: EmailStr
     first_name: str
     last_name: str
