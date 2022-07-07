@@ -16,7 +16,6 @@ class User(BaseModel):
         self.email = self.email.lower()
     @staticmethod
     def init():
-        db.users.create_index([("username", 1)], unique=True)
         db.users.create_index([("email", 1)], unique=True)
 
 
