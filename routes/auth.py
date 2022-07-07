@@ -159,7 +159,6 @@ async def resend_verification_email(email: str):
                 email,
                 {
                     "url": config.BACKEND_URL,
-                    "username": user["username"],
                     "token": access_token,
                 },
             )
