@@ -210,7 +210,6 @@ async def forgot_password(email: str):
                 email,
                 {
                     "url": config.BACKEND_URL,
-                    "username": user["username"],
                     "token": access_token,
                 },
             )
