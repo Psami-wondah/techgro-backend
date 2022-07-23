@@ -293,7 +293,7 @@ async def google_auth(data: GoogleAuth):
 
 @auth.post("/verify-token")
 async def verify_token(body: VerifyToken):
-    user = verify_user_token(body.access_token)
+    user = await verify_user_token(body.access_token)
     if user:
         print(user)
         return {"message": "Token Valid"}
