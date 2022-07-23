@@ -295,6 +295,7 @@ async def google_auth(data: GoogleAuth):
 async def verify_token(body: VerifyToken):
     user = verify_user_token(body.access_token)
     if user:
+        print(user)
         return {"message": "Token Valid"}
     else:
         return JSONResponse(
