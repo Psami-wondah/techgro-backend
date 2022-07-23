@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, HTTPException
 from models.token import Token
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm
@@ -293,10 +293,11 @@ async def google_auth(data: GoogleAuth):
 
 @auth.post("/verify-token")
 async def verify_token(body: VerifyToken):
-    user = get_current_user(body.access_token)
-    if user:
-        return {"message": "Token Valid"}
-    else:
+    try: 
+        user = get_current_user(body.access_token)
+        if user:
+            return {"message": "Token Valid"}
+    except HTTPException:
         return JSONResponse(
                 {"message": "Invalid token"}, status_code=status.HTTP_401_UNAUTHORIZED
         )
