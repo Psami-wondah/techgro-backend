@@ -2,4 +2,6 @@ from pydantic import BaseModel
 
 
 class SensorData(BaseModel):
-    temp: str
+    temperature: str
+    soil_moisture: str
+    humidity: str
