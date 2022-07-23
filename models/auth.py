@@ -30,3 +30,6 @@ class ResetPassword(BaseModel):
 
 class GoogleAuth(BaseModel):
     credential: str
+
+class VerifyToken(BaseModel):
+    access_token: str
