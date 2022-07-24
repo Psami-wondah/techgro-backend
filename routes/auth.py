@@ -42,8 +42,8 @@ class OAuth2PasswordRequestFormEmail:
 
 
 @auth.post("/token", response_model=Token)
-async def login_for_access_token(data: OAuth2PasswordRequestFormEmail = Depends()):
-    user = authenticate_user(data.email, data.password)
+async def login_for_access_token(data: OAuth2PasswordRequestForm = Depends()):
+    user = authenticate_user(data.username, data.password)
     if not user:
         return JSONResponse(
             {"message": "Incorrect email or password"},

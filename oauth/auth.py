@@ -7,6 +7,7 @@ from jose import JWTError, jwt
 from db.config import db
 from datetime import datetime, timedelta
 from typing import Optional
+from serializers.serializers import serialize_dict
 from utils import config
 
 
@@ -26,7 +27,7 @@ def get_password_hash(password):
 def get_user(email: str):
     user = db.users.find_one({"email": email})
     if user:
-        return UserInDB(**user)
+        return UserInDB(**serialize_dict(user))
 
 def authenticate_user(email: str, password: str):
     user = get_user(email)
@@ -65,6 +66,20 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     user = get_user(email=token_data.email)
     if user is None:
         raise credentials_exception
+    return user
+
+async def get_sio_user(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            return False
+        token_data = TokenData(email=email)
+    except JWTError:
+        return False
+    user = get_user(email=token_data.email)
+    if user is None:
+        return False
     return user
 
 
