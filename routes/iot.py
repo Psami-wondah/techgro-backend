@@ -24,15 +24,18 @@ sio: Any = socketio.AsyncServer(async_mode="asgi", client_manager=mgr, cors_allo
 async def sensors_response(data: SensorData, request: Request, key: str):
     db_farm = db.farm.find_one({"key": key})
     farm = Farm(**db_farm)
-    db.farmdata.insert_one({
+    farm_data={
         "date_added": datetime.utcnow(),
         "temperature": data.temperature,
         "humidity": data.humidity,
         "soil_moisture": data.soil_moisture,
         "farm_short_id": farm.short_id
 
-    })
+    }
+    db.farmdata.insert_one(farm_data)
     c = await request.json()
+    await sio.emit("new_sensor_data", farm_data, room=farm.short_id)
+
     return {"message": "New farm data added", "data": c}
 
 @sio.on("connect")
@@ -56,7 +59,8 @@ async def print_message(sid, data):
     data = json.loads(data)
     farm_short_id = data['farm_short_id']
     db_farm_data = db.farmdata.find({"farm_short_id": farm_short_id}).sort([("date_added", pymongo.DESCENDING)])
-    farm_data = FarmData(**db_farm_data[0])
-    farm_data.date_added = str(farm_data.date_added)
-    farm_data = farm_data.dict()
-    await sio.emit("new_sensor_data", farm_data, room=farm_short_id)
+    if not len(db_farm_data) == 0:
+        farm_data = FarmData(**db_farm_data[0])
+        farm_data.date_added = str(farm_data.date_added)
+        farm_data = farm_data.dict()
+        await sio.emit("new_sensor_data", farm_data, room=farm_short_id)
