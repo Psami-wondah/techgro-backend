@@ -56,5 +56,7 @@ async def print_message(sid, data):
     data = json.loads(data)
     farm_short_id = data['farm_short_id']
     db_farm_data = db.farmdata.find({"farm_short_id": farm_short_id}).sort([("date_added", pymongo.DESCENDING)])
-    farm_data = FarmData(**db_farm_data[0]).dict()
+    farm_data = FarmData(**db_farm_data[0])
+    farm_data.date_added = str(farm_data.date_added)
+    farm_data = farm_data.dict()
     await sio.emit("new_sensor_data", farm_data, room=farm_short_id)
