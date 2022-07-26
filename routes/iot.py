@@ -7,6 +7,7 @@ from models.farm import Farm, FarmData
 from models.iot import SensorData
 from datetime import datetime
 from oauth.auth import get_sio_user
+from serializers.serializers import serialize_list
 from utils import config
 import socketio
 from typing import Any
@@ -34,7 +35,7 @@ async def sensors_response(data: SensorData, request: Request, key: str):
     }
     db.farmdata.insert_one(farm_data)
     c = await request.json()
-    await sio.emit("new_sensor_data", farm_data, room=farm.short_id)
+    # await sio.emit("new_sensor_data", farm_data, room=farm.short_id)
 
     return {"message": "New farm data added", "data": c}
 
@@ -59,6 +60,7 @@ async def print_message(sid, data):
     data = json.loads(data)
     farm_short_id = data['farm_short_id']
     db_farm_data = db.farmdata.find({"farm_short_id": farm_short_id}).sort([("date_added", pymongo.DESCENDING)])
+    db_farm_data = serialize_list(db_farm_data)
     if not len(db_farm_data) == 0:
         farm_data = FarmData(**db_farm_data[0])
         farm_data.date_added = str(farm_data.date_added)
