@@ -35,7 +35,7 @@ async def sensors_response(data: SensorData, request: Request, key: str):
     }
     db.farmdata.insert_one(farm_data)
     c = await request.json()
-    # await sio.emit("new_sensor_data", farm_data, room=farm.short_id)
+    await sio.emit("new_sensor_data", farm_data, room=farm.short_id)
 
     return {"message": "New farm data added", "data": c}
 
@@ -66,3 +66,8 @@ async def print_message(sid, data):
         farm_data.date_added = str(farm_data.date_added)
         farm_data = farm_data.dict()
         await sio.emit("new_sensor_data", farm_data, room=farm_short_id)
+
+
+@sio.on("disconnect")
+async def disconnect(sid):
+    print("SocketIO disconnect")
