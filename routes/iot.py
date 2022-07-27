@@ -46,6 +46,7 @@ async def connect(sid, env, auth):
         if user:
             print("SocketIO connect")
             farm_short_id = auth['farm_short_id']
+            print(farm_short_id)
             sio.enter_room(sid, str(farm_short_id))
             await sio.emit("connect", f"User {user.username} connected as {sid}")
         else:
