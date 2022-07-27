@@ -59,6 +59,7 @@ async def connect(sid, env, auth):
 @sio.on('sensor_data')
 async def print_message(sid, data):
     data = json.loads(data)
+    print("received smth")
     farm_short_id = data['farm_short_id']
     db_farm_data = db.farmdata.find({"farm_short_id": farm_short_id}).sort([("date_added", pymongo.DESCENDING)])
     db_farm_data = serialize_list(db_farm_data)
@@ -66,6 +67,7 @@ async def print_message(sid, data):
         farm_data = FarmData(**db_farm_data[0])
         farm_data.date_added = str(farm_data.date_added)
         farm_data = farm_data.dict()
+        print("sending_smth")
         await sio.emit("new_sensor_data", farm_data, room=farm_short_id)
 
 

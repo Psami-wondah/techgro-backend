@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
+import pymongo
 from models.farm import Farm, FarmCreate, FarmData
 from models.user import UserInDB
 from db.config import db
@@ -45,6 +46,6 @@ async def all_farms(user: UserInDB = Depends(get_current_user)):
 
 @farm_route.get("/farm-data/{farm_short_id}", response_model=List[FarmData])
 async def farm_data(farm_short_id: str, user: UserInDB = Depends(get_current_user)):
-    db_farm_data = db.farmdata.find({"farm_short_id": farm_short_id})
+    db_farm_data = db.farmdata.find({"farm_short_id": farm_short_id}).sort([("date_added", pymongo.DESCENDING)])
     farm_data = [FarmData(**farm_datum) for farm_datum in db_farm_data]
     return farm_data
