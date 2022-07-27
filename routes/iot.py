@@ -62,8 +62,7 @@ async def print_message(sid, data):
     print("received smth")
     farm_short_id = data['farm_short_id']
     db_farm_data = db.farmdata.find({"farm_short_id": farm_short_id}).sort([("date_added", pymongo.DESCENDING)])
-    print(list(db_farm_data))
-    db_farm_data = serialize_list(db_farm_data)
+    db_farm_data=list(db_farm_data)
     print(db_farm_data)
     if len(db_farm_data) > 0:
         print("omororrr")
