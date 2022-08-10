@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from db.config import db
 from typing import Any
+from utils.py_object_id import PyObjectId
 
 
 class User(BaseModel):
@@ -20,6 +21,6 @@ class User(BaseModel):
 
 
 class UserInDB(User):
-    id: str
+    id: PyObjectId
     hashed_password: str
     is_verified: bool

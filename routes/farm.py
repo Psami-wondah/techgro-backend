@@ -7,7 +7,6 @@ from models.user import UserInDB
 from db.config import db
 from utils.utils import generate_short_id
 from oauth.auth import get_current_user
-from bson.objectid import ObjectId
 from pymongo.errors import DuplicateKeyError
 
 
@@ -22,7 +21,7 @@ farm_route = APIRouter(
 @farm_route.post('/add')
 async def add_farm(data: FarmCreate, user: UserInDB = Depends(get_current_user)):
     farm = {
-        "user_id": ObjectId(user.id),
+        "user_id": user.id,
         "name": data.name,
         "key": data.key,
         "short_id": generate_short_id()
@@ -39,7 +38,7 @@ async def add_farm(data: FarmCreate, user: UserInDB = Depends(get_current_user))
 
 @farm_route.get("/all", response_model=List[Farm])
 async def all_farms(user: UserInDB = Depends(get_current_user)):
-    db_farms = db.farm.find({"user_id": ObjectId(user.id)})
+    db_farms = db.farm.find({"user_id": user.id})
     farms = [Farm(**farm) for farm in db_farms]
     return farms
 
