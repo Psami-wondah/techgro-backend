@@ -1,0 +1,50 @@
+name: Deploy to Linode
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate .env file
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          envkey_ACCESS_TOKEN_EXPIRE_MINUTES: ${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}
+          envkey_ALGORITHM: ${{ secrets.ALGORITHM }}
+          envkey_BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          envkey_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          envkey_MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          envkey_MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          envkey_MAIL_PORT: ${{ secrets.MAIL_PORT}}
+          envkey_MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+          envkey_MAIL_SSL: ${{ secrets.MAIL_SSL }}
+          envkey_MAIL_TLS: ${{ secrets.MAIL_TLS }}
+          envkey_MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          envkey_MONGO_URI: ${{ secrets.MONGO_URI }}
+          envkey_REDIS_URL: ${{ secrets.REDIS_URL }}
+          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          file_name: .env
+          fail_on_empty: false
+
+      - name: Build Docker images
+        run: |
+          docker compose build --force-rm --no-cache
+
+  run:
+    runs-on: self-hosted
+
+    needs:
+      - build
+
+    steps:
+      - name: Run Docker images
+        run: |
+          docker kill $(docker ps -q)
+          docker compose up -d --remove-orphans

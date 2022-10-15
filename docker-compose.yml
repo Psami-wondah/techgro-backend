@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes:
+      - cache:/data
+    expose:
+      - 6379
+    restart: always
+
+  techgro-api:
+    build: .
+    command: sh entry-point.sh
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    expose:
+      - 8000
+    depends_on:
+      - pgbouncer
+      - cache
+    restart: always
+
+volumes:
+  cache:
+    driver: local

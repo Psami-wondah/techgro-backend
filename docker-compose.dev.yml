@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes:
+      - cache:/data
+    expose:
+      - 6379
+
+  techgro-api:
+    build: .
+    command: python server.py
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    expose:
+      - 8000
+    depends_on:
+      - cache
+
+volumes:
+  cache:
+    driver: local
