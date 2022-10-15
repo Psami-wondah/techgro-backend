@@ -45,5 +45,4 @@ jobs:
     steps:
       - name: Run Docker images
         run: |
-          docker kill $(docker ps -q)
           docker compose up -d --remove-orphans
