@@ -29,7 +29,6 @@ jobs:
           envkey_MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
           envkey_MONGO_URI: ${{ secrets.MONGO_URI }}
           envkey_REDIS_URL: ${{ secrets.REDIS_URL }}
-          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
           file_name: .env
           fail_on_empty: false
 
