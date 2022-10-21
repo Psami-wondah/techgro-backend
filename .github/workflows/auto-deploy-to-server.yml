@@ -15,9 +15,6 @@ jobs:
       - name: Generate .env file
         uses: SpicyPizza/create-envfile@v1.3
         with:
-          file_name: .env
-          fail_on_empty: false
-        env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           ACCESS_TOKEN_EXPIRE_MINUTES: ${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}
           ALGORITHM: ${{ secrets.ALGORITHM }}
@@ -33,6 +30,8 @@ jobs:
           MONGO_URI: ${{ secrets.MONGO_URI }}
           REDIS_URL: ${{ secrets.REDIS_URL }}
           SENDINBLUE_API_KEY: ${{ secrets.SENDINBLUE_API_KEY }}
+          file_name: .env
+          fail_on_empty: false
 
       - name: Build Docker images
         run: |
