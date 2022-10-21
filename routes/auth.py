@@ -12,7 +12,7 @@ from models.auth import GoogleAuth, LoginRes, UserLogin, UserReg, RegRes, ResetP
 from db.config import db
 from pymongo.errors import DuplicateKeyError
 from fastapi_mail.errors import ConnectionErrors
-from mail.config import send_activation_email, send_reset_password_email
+from mail.sendinblue import send_activation_email, send_reset_password_email
 from serializers.serializers import serialize_dict
 from jose import JWTError, jwt
 from google.oauth2 import id_token
@@ -120,7 +120,7 @@ async def create_user(reg: UserReg):
             status_code=status.HTTP_400_BAD_REQUEST,
         )
     try:
-        await send_activation_email(
+        send_activation_email(
             reg.email,
             {"url": config.BACKEND_URL, "username": reg.username, "token": access_token},
         )
@@ -155,7 +155,7 @@ async def resend_verification_email(email: str):
                 status_code=status.HTTP_208_ALREADY_REPORTED,
             )
         try:
-            await send_activation_email(
+            send_activation_email(
                 email,
                 {
                     "url": config.BACKEND_URL,
@@ -206,7 +206,7 @@ async def forgot_password(email: str):
             data={"sub": email}, expires_delta=access_token_expires
         )
         try:
-            await send_reset_password_email(
+            send_reset_password_email(
                 email,
                 {
                     "url": config.BACKEND_URL,
