@@ -24,7 +24,8 @@ async def add_farm(data: FarmCreate, user: UserInDB = Depends(get_current_user))
         "user_id": user.id,
         "name": data.name,
         "key": data.key,
-        "short_id": generate_short_id()
+        "short_id": generate_short_id(),
+        "motor_state": "off"
     }
 
     try:

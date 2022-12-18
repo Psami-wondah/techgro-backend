@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel
-
+from typing import Optional
 from models.iot import SensorData
 from db.config import db
 
@@ -19,3 +19,4 @@ class FarmData(SensorData):
 
 class Farm(FarmCreate):
     short_id: str
+    motor_state: Optional[str]
